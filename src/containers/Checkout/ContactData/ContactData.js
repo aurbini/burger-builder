@@ -5,6 +5,8 @@ import axios from '../../../axios-orders'
 import Spinner from '../../../components/UI/Spinner/Spinner'
 import Input from '../../../components/UI/Input/Input'
 import orderFormObj from '../../../helperFunctions/orderFormObj'
+import { connect } from 'react-redux'
+
 
 class ContactData extends Component {
   state = { 
@@ -101,7 +103,7 @@ class ContactData extends Component {
       formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value
     }
     const order = {
-        ingredients: this.props.ingredients,
+        ingredients: this.props.ings,
         price: this.props.price,
         orderData: formData
     }
@@ -115,37 +117,37 @@ class ContactData extends Component {
             } );
     console.log(this.props)
    }
-   checkValidity(value, rules) {
-      let isValid = true
-      if(rules.required) {
-        isValid = value.trim() !== '' && isValid
-      } 
-      if(rules.minLength){
-        isValid = value.length >= rules.minLength && isValid
-      }
-      if(rules.maxLength){
-        isValid = value.length <= rules.maxLength && isValid
-      }
-      return isValid
+  checkValidity(value, rules) {
+    let isValid = true
+    if(rules.required) {
+      isValid = value.trim() !== '' && isValid
+    } 
+    if(rules.minLength){
+      isValid = value.length >= rules.minLength && isValid
+    }
+    if(rules.maxLength){
+      isValid = value.length <= rules.maxLength && isValid
+    }
+    return isValid
    }
-   inputchangedHandler= (event, inputIdentifier) => {
-     const updatedOrderForm = {
-       ...this.state.orderForm
-     }
+  inputchangedHandler= (event, inputIdentifier) => {
+    const updatedOrderForm = {
+      ...this.state.orderForm
+    }
      const updatedFormElement = {
-       ...updatedOrderForm[inputIdentifier]
-     }
-     updatedFormElement.value = event.target.value
-     updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation)
-     updatedFormElement.touched = true; 
-     updatedOrderForm[inputIdentifier] = updatedFormElement; 
+      ...updatedOrderForm[inputIdentifier]
+    }
+    updatedFormElement.value = event.target.value
+    updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation)
+    updatedFormElement.touched = true; 
+    updatedOrderForm[inputIdentifier] = updatedFormElement; 
 
-     let formIsValid = true; 
-     for(let inputIdentifier in updatedOrderForm){
-       formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid
-     }
-     console.log(updatedFormElement)
-     this.setState({orderForm: updatedOrderForm, formIsValid: formIsValid})
+    let formIsValid = true; 
+    for(let inputIdentifier in updatedOrderForm){
+      formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid
+    }
+    console.log(updatedFormElement)
+    this.setState({orderForm: updatedOrderForm, formIsValid: formIsValid})
    }
   render() { 
     const formElementArray = []
@@ -186,5 +188,12 @@ class ContactData extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    ings: state.ingredients, 
+    price: state.totalPrice
+  }
+}
  
-export default ContactData;
+export default connect(mapStateToProps)(ContactData);
