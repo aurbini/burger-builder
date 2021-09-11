@@ -13,3 +13,6 @@ export {
   fetchOrder
 } from './order'
 
+export {
+  auth
+} from './auth'
